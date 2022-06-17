@@ -1,4 +1,8 @@
 using Application.Services;
+using Domain.Interfaces;
+using Infrastructure;
+using Infrastructure.Extensions;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +26,10 @@ namespace Application
             services.AddControllers();
             services.AddSwaggerGen();
             services.AddScoped<CustomerService>();
+            services.AddDataServices(Configuration);
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>))
+                .AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
