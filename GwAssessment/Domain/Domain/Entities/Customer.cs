@@ -1,7 +1,5 @@
 ﻿using Domain.Base;
-using Domain.ValueObjects;
 using System;
-using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -11,21 +9,22 @@ namespace Domain.Entities
         public DateTimeOffset DateOfBirth { get; set; }
         public DateTimeOffset DateOfRegistration { get; set; }
         public bool IsActive { get; set; }
+        public string Address { get; set; }
         //public IList<Document> Documents { get; set; }
-        //public Address Address { get; set; }
+
 
         public Customer(string name,
             DateTimeOffset dateOfBirth,
-            DateTimeOffset dateOfRegistration
+            DateTimeOffset dateOfRegistration,
+            string address
             //,            IList<string> documentNames,
-            //Address address
             )
         {
             this.Name = name;
             DateOfBirth = dateOfBirth;
             DateOfRegistration = dateOfRegistration;
             IsActive = true;
-            //Address = address;
+            Address = address;
             //foreach (var item in documentNames)
             //{
             //    this.AddDocument(item);
