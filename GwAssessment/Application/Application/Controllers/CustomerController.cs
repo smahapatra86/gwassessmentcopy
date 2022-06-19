@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Application.Controllers
@@ -28,10 +29,16 @@ namespace Application.Controllers
             return Ok(response.Message);
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{customerName}")]
+        public async Task<ActionResult<GetCustomerResponse>> Get([FromRoute][Required] string customerName)
         {
-            return Ok("Under development");
+            var response = await customerService.GetAsync(customerName);
+            if (response.IsError)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response.Customer);
         }
     }
 }

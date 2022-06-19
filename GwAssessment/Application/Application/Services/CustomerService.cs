@@ -41,5 +41,34 @@ namespace Application.Services
             var addCustomerSuccessResponse = new AddCustomerResponse { IsError = false, Name = customer.Name, Message = "Customer registered successfully" };
             return addCustomerSuccessResponse;
         }
+
+        public async Task<GetCustomerResponse> GetAsync(string name)
+        {
+            var repository = UnitOfWork.AsyncRepository<Customer>();
+            //Check if customer already exists
+            var customer = await repository.GetEntityAsync(o => o.Name == name).ConfigureAwait(false);
+            if (customer == null)
+            {
+                var responseError = new GetCustomerResponse { IsError = true, Message = "Customer not found" };
+                return responseError;
+            }
+
+            var documents = new List<string>();
+            customer.Documents?.ForEach(o => documents.Add(o.DocumentName));
+            var responseSuccess = new GetCustomerResponse
+            {
+                Customer = new CustomerDTO
+                {
+                    Name = customer.Name,
+                    DateOfBirth = customer.DateOfBirth,
+                    DateOfRegistration = customer.DateOfRegistration,
+                    Address = customer.Address,
+                    Documents = documents,
+                    IsActive = customer.IsActive
+                },
+                IsError = false
+            };
+            return responseSuccess;
+        }
     }
 }

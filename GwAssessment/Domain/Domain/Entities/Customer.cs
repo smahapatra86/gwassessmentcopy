@@ -12,6 +12,5 @@ namespace Domain.Entities
         public bool IsActive { get; set; }
         public string Address { get; set; }
         public List<Document> Documents { get; set; }
-
     }
 }
