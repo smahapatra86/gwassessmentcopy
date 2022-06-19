@@ -2,6 +2,8 @@
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -24,6 +26,11 @@ namespace Infrastructure.Repositories
         public async Task<T> GetEntityById(object id)
         {
             return await dbSet.FindAsync(id).ConfigureAwait(false);
+        }
+
+        public async Task<T> GetEntityAsync(Expression<Func<T, bool>> expression)
+        {
+            return await dbSet.FirstOrDefaultAsync(expression);
         }
     }
 }

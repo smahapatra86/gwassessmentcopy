@@ -17,10 +17,15 @@ namespace Application.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddCustomerRequest request)
+        public async Task<ActionResult<AddCustomerResponse>> Add([FromBody] AddCustomerRequest request)
         {
-            var users = await customerService.AddNewAsync(request);
-            return Ok(users);
+            var response = await customerService.AddNewAsync(request);
+            if (response.IsError)
+            {
+                return BadRequest(response.Message);
+            }
+
+            return Ok(response.Message);
         }
 
         [HttpGet]
