@@ -3,6 +3,8 @@ using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -31,6 +33,11 @@ namespace Infrastructure.Repositories
         public async Task<T> GetEntityAsync(Expression<Func<T, bool>> expression)
         {
             return await dbSet.FirstOrDefaultAsync(expression);
+        }
+
+        public Task<List<T>> ListAsync(Expression<Func<T, bool>> expression)
+        {
+            return dbSet.Where(expression).ToListAsync();
         }
     }
 }

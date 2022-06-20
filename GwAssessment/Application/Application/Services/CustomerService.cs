@@ -44,17 +44,19 @@ namespace Application.Services
 
         public async Task<GetCustomerResponse> GetAsync(string name)
         {
-            var repository = UnitOfWork.AsyncRepository<Customer>();
-            //Check if customer already exists
-            var customer = await repository.GetEntityAsync(o => o.Name == name).ConfigureAwait(false);
+            var customerRepository = UnitOfWork.AsyncRepository<Customer>();
+            var customer = await customerRepository.GetEntityAsync(o => o.Name == name).ConfigureAwait(false);
             if (customer == null)
             {
                 var responseError = new GetCustomerResponse { IsError = true, Message = "Customer not found" };
                 return responseError;
             }
 
-            var documents = new List<string>();
-            customer.Documents?.ForEach(o => documents.Add(o.DocumentName));
+            var documentRepository = UnitOfWork.AsyncRepository<Document>();
+            var documents = await documentRepository.ListAsync(o => o.CustomerId == customer.Id).ConfigureAwait(false);
+
+            var documentsDto = new List<string>();
+            documents.ForEach(o => documentsDto.Add(o.DocumentName));
             var responseSuccess = new GetCustomerResponse
             {
                 Customer = new CustomerDTO
@@ -63,7 +65,7 @@ namespace Application.Services
                     DateOfBirth = customer.DateOfBirth,
                     DateOfRegistration = customer.DateOfRegistration,
                     Address = customer.Address,
-                    Documents = documents,
+                    Documents = documentsDto,
                     IsActive = customer.IsActive
                 },
                 IsError = false
